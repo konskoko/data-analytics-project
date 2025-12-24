@@ -4,6 +4,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import MaxAbsScaler
 import pandas as pd
 import sklearn
 import sklearn.feature_extraction
@@ -15,6 +16,7 @@ def k_fold_cv(model=None, X=None, y=None, k=5):
     stratified_cv = StratifiedKFold(n_splits=k, shuffle=True, random_state=RANDOM_STATE)
     pipe = make_pipeline(
         sklearn.feature_extraction.text.CountVectorizer(max_features = 10000),
+        MaxAbsScaler(),
         model
     )
     score = cross_val_score(pipe, X, y, cv=stratified_cv, n_jobs=-1, verbose=3)
