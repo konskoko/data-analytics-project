@@ -34,7 +34,9 @@ def main():
     # SVM on BOW
     t0 = perf_counter()
     # svm_clf = sklearn.svm.SVC(kernel='linear')
-    svm_clf = sklearn.svm.LinearSVC()
+    # Use hinge loss for standard SVM
+    # Increase max_iter to avoid convergence issues
+    svm_clf = sklearn.svm.LinearSVC(loss='hinge', max_iter=10000, random_state=RANDOM_STATE)
     svm_score = k_fold_cv(svm_clf, X, y)
     print(f"SVM accuracy: {svm_score.mean()} with std {svm_score.std()}")
     t1 = perf_counter()
