@@ -4,7 +4,15 @@ import sklearn.feature_extraction
 from sklearn.pipeline import make_pipeline
 from config import MAX_FEATURES
 from data_utils import get_data
-from model_utils import evaluate_pipeline, jaccard_distance
+from model_utils import evaluate_pipeline
+
+def jaccard_distance(x, y):
+    """
+    Jaccard distance for sparse matrices.
+    """
+    intersection = x.dot(y.T)[0, 0]
+    union = x.getnnz() + y.getnnz() - intersection
+    return 1.0 - intersection / union if union > 0 else 0.0
 
 
 def main():

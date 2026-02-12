@@ -2,15 +2,6 @@ from time import perf_counter
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from config import RANDOM_STATE, N_JOBS
 
-def jaccard_distance(x, y):
-    """
-    Jaccard distance for sparse matrices.
-    """
-    intersection = x.dot(y.T)[0, 0]
-    union = x.getnnz() + y.getnnz() - intersection
-    return 1.0 - intersection / union if union > 0 else 0.0
-
-
 def evaluate_pipeline(pipeline, X, y, model_name, k=5):
     """
     Evaluate a model pipeline using Stratified K-Fold Cross-Validation.
