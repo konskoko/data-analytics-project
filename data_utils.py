@@ -3,7 +3,7 @@ import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 import pandas as pd
-from config import DATA_PATH, N_SAMPLES_DEV
+from config import DATA_PATH, DEV_DATA_FRACTION, RANDOM_STATE
 
 
 def preprocess_text(text: str):
@@ -18,8 +18,8 @@ def preprocess_text(text: str):
 def get_data():
     # Read data
     train_df = pd.read_csv(DATA_PATH / 'train.csv')
-    if N_SAMPLES_DEV is not None:
-        train_df = train_df.loc[:N_SAMPLES_DEV, :]
+    if DEV_DATA_FRACTION is not None:
+        train_df = train_df.sample(frac=DEV_DATA_FRACTION, random_state=RANDOM_STATE)
 
     train_df.loc[:, ['Title', 'Content']] = train_df[['Title', 'Content']].map(preprocess_text)
     X = train_df['Title'] + " " + train_df['Content']
