@@ -12,7 +12,7 @@ def preprocess_text(text: str):
     stop_words = set(stopwords.words('english'))
 
     words = [word for word in text_no_punct.split() if word not in stop_words]
-    processed_text =' '.join(words)
+    processed_text = ' '.join(words)
     return processed_text
 
 def get_data():
@@ -22,7 +22,7 @@ def get_data():
         train_df = train_df.loc[:N_SAMPLES_DEV, :]
 
     train_df.loc[:, ['Title', 'Content']] = train_df[['Title', 'Content']].map(preprocess_text)
-    X = train_df['Title'] + train_df['Content']
+    X = train_df['Title'] + " " + train_df['Content']
     y = train_df['Label']
 
     return X, y
