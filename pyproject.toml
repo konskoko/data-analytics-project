@@ -3,10 +3,43 @@ name = "data-analytics-project"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 dependencies = [
     "datasketch>=1.9.0",
     "nltk>=3.9.2",
     "pandas>=2.3.3",
     "scikit-learn>=1.8.0",
+    "tqdm>=4.66.0",
 ]
+
+[project.optional-dependencies]
+cpu = [
+    "torch==2.8.0",
+]
+gpu = [
+    "torch==2.8.0",
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = "cpu" },
+    { extra = "gpu" },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-gpu", extra = "gpu" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-gpu"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
