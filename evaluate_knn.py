@@ -16,11 +16,8 @@ def jaccard_distance(x, y):
 
 
 def main():
-    t0 = perf_counter()
-    X, y = get_data()
+    X, y = get_data(preprocess=True)
 
-    t1 = perf_counter()
-    print(f"Data loaded in {t1 - t0:.2f} seconds")
     print(f"{len(X)} training samples")
     print("-" * 30)
 
