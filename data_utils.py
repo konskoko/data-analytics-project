@@ -1,4 +1,5 @@
 import string
+from time import perf_counter
 import nltk
 nltk.download('stopwords')
 nltk.download('punkt_tab')
@@ -36,7 +37,8 @@ def preprocess_text(text: str, tokenizer='simple_rem_punct'):
     return ' '.join(processed_tokens)
 
 def get_data(sample=True, preprocess=False):
-    # Read data
+    t0 = perf_counter()
+
     train_df = pd.read_csv(DATA_PATH / 'train.csv')
     if sample and DEV_DATA_FRACTION is not None:
         train_df = train_df.sample(frac=DEV_DATA_FRACTION, random_state=RANDOM_STATE)
@@ -44,6 +46,8 @@ def get_data(sample=True, preprocess=False):
     train_df['text'] = train_df['Title'] + " " + train_df['Content']
     if preprocess:
         train_df['text'] = train_df['text'].map(preprocess_text)
+    t1 = perf_counter()
+    print(f"Data loaded in {t1 - t0:.2f} seconds")
     X = train_df['text']
     y = train_df['Label']
 
