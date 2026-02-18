@@ -47,7 +47,7 @@ def get_data(sample=True, preprocess=False):
     if preprocess:
         train_df['text'] = train_df['text'].map(preprocess_text)
     t1 = perf_counter()
-    print(f"Data loaded in {t1 - t0:.2f} seconds")
+    print(f"Loaded and preprocessed {len(train_df)} samples in {t1 - t0:.2f} seconds")
     X = train_df['text']
     y = train_df['Label']
 

@@ -11,9 +11,6 @@ from model_utils import evaluate_pipeline
 def main():
     X, y = get_data(preprocess=True)
 
-    print(f"{len(X)} training samples")
-    print("-" * 30)
-
     svm_pipe = make_pipeline(
         sklearn.feature_extraction.text.CountVectorizer(max_features=MAX_FEATURES),
         MaxAbsScaler(),
