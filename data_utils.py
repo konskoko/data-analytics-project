@@ -1,34 +1,57 @@
 import string
 import nltk
 nltk.download('stopwords')
+nltk.download('punkt_tab')
+nltk.download('wordnet')
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 import pandas as pd
+from wordcloud import STOPWORDS
 from config import DATA_PATH, DEV_DATA_FRACTION, RANDOM_STATE
 
 
-def preprocess_text(text: str):
-    punct_remover = str.maketrans('', '',string.punctuation)
-    text_no_punct = text.strip().lower().translate(punct_remover)
-    stop_words = set(stopwords.words('english'))
+_STOP_WORDS = set(stopwords.words('english'))
+_STOP_WORDS.update(STOPWORDS)
+_STOP_WORDS.update(["said", "say", "may", "one"])
+_LEMMATIZER = WordNetLemmatizer()
 
-    words = [word for word in text_no_punct.split() if word not in stop_words]
-    processed_text = ' '.join(words)
-    return processed_text
+def preprocess_text(text: str, tokenizer='simple_rem_punct'):
+    if tokenizer == 'simple':
+        tokens = text.strip().lower().split()
+    elif tokenizer == 'simple_rem_punct':
+        tokens = text.strip().lower().translate(
+            str.maketrans('', '', string.punctuation)
+        ).split()
+    elif tokenizer == 'nltk':
+        tokens = nltk.word_tokenize(text.strip().lower())
+    else:
+        raise ValueError(f"Unknown tokenizer: {tokenizer}")
 
-def get_data(sample=True):
+    processed_tokens = [
+        _LEMMATIZER.lemmatize(word)
+        for word in tokens
+        if word not in _STOP_WORDS
+    ]
+
+    return ' '.join(processed_tokens)
+
+def get_data(sample=True, preprocess=False):
     # Read data
     train_df = pd.read_csv(DATA_PATH / 'train.csv')
     if sample and DEV_DATA_FRACTION is not None:
         train_df = train_df.sample(frac=DEV_DATA_FRACTION, random_state=RANDOM_STATE)
 
-    train_df.loc[:, ['Title', 'Content']] = train_df[['Title', 'Content']].map(preprocess_text)
-    X = train_df['Title'] + " " + train_df['Content']
+    train_df['text'] = train_df['Title'] + " " + train_df['Content']
+    if preprocess:
+        train_df['text'] = train_df['text'].map(preprocess_text)
+    X = train_df['text']
     y = train_df['Label']
 
     return X, y
 
 def get_test_data():
     test_df = pd.read_csv(DATA_PATH / 'test_without_labels.csv')
-    test_df.loc[:, ['Title', 'Content']] = test_df[['Title', 'Content']].map(preprocess_text)
-    X_test = test_df['Title'] + " " + test_df['Content']
+    test_df['text'] = test_df['Title'] + " " + test_df['Content']
+    test_df['text'] = test_df['text'].map(preprocess_text)
+    X_test = test_df['text']
     return test_df, X_test
