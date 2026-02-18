@@ -20,7 +20,7 @@ def main():
     svm_pipe = make_pipeline(
         sklearn.feature_extraction.text.CountVectorizer(max_features=MAX_FEATURES),
         MaxAbsScaler(),
-        sklearn.svm.LinearSVC(loss='hinge', max_iter=10000, random_state=RANDOM_STATE)
+        sklearn.svm.LinearSVC(loss='hinge', max_iter=20000, random_state=RANDOM_STATE)
     )
 
     evaluate_pipeline(svm_pipe, X, y, "SVM")
