@@ -1,23 +1,21 @@
 from time import perf_counter
 import sklearn.svm
-import sklearn.feature_extraction
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import MaxAbsScaler
 from config import RANDOM_STATE, MAX_FEATURES
 from data_utils import get_data, get_test_data
 from model_utils import output_preds
 
 def get_svm_pipeline():
     return make_pipeline(
-        sklearn.feature_extraction.text.CountVectorizer(max_features=MAX_FEATURES),
-        MaxAbsScaler(),
+        TfidfVectorizer(max_features=200000, ngram_range=(1, 2)),
         sklearn.svm.LinearSVC(loss='hinge', max_iter=10000, random_state=RANDOM_STATE)
     )
 
 def main():
     print("Loading training data...")
     t0 = perf_counter()
-    X_train, y_train = get_data(sample=False)
+    X_train, y_train = get_data(sample=False, preprocess=True)
     t1 = perf_counter()
     print(f"Training data loaded in {t1 - t0:.2f} seconds")
 
