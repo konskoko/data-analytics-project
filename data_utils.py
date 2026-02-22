@@ -36,14 +36,14 @@ def preprocess_text(text: str, tokenizer='simple_rem_punct'):
 
     return ' '.join(processed_tokens)
 
-def get_data(sample=True, preprocess=False):
+def get_data(sample=True, preprocess=True, title_weight=1):
     t0 = perf_counter()
 
     train_df = pd.read_csv(DATA_PATH / 'train.csv')
     if sample and DEV_DATA_FRACTION is not None:
         train_df = train_df.sample(frac=DEV_DATA_FRACTION, random_state=RANDOM_STATE)
 
-    train_df['text'] = train_df['Title'] + " " + train_df['Content']
+    train_df['text'] = title_weight * (train_df['Title'] + " ") + train_df['Content']
     if preprocess:
         train_df['text'] = train_df['text'].map(preprocess_text)
     t1 = perf_counter()
@@ -53,9 +53,14 @@ def get_data(sample=True, preprocess=False):
 
     return X, y
 
-def get_test_data():
+def get_test_data(preprocess=True, title_weight=1):
+    t0 = perf_counter()
+
     test_df = pd.read_csv(DATA_PATH / 'test_without_labels.csv')
-    test_df['text'] = test_df['Title'] + " " + test_df['Content']
-    test_df['text'] = test_df['text'].map(preprocess_text)
+    test_df['text'] = title_weight * (test_df['Title'] + " ") + test_df['Content']
+    if preprocess:
+        test_df['text'] = test_df['text'].map(preprocess_text)
+    t1 = perf_counter()
+    print(f"Loaded and preprocessed {len(test_df)} test samples in {t1 - t0:.2f} seconds")
     X_test = test_df['text']
     return test_df, X_test
