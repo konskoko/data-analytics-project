@@ -3,24 +3,24 @@ import time
 
 import numpy as np
 import pandas as pd
+from numba import njit
 from tqdm import tqdm
 
 
+@njit
 def dtw_distance(s1, s2):
     n, m = len(s1), len(s2)
     dtw_matrix = np.full((n + 1, m + 1), np.inf)
     dtw_matrix[0, 0] = 0
 
-    cost_grid = (s1[:, None] - s2[None, :]) ** 2
-
     for i in range(1, n + 1):
         for j in range(1, m + 1):
-            cost = cost_grid[i - 1, j - 1]
+            cost = abs(s1[i - 1] - s2[j - 1])
             dtw_matrix[i, j] = cost + min(dtw_matrix[i - 1, j],
                                           dtw_matrix[i, j - 1],
                                           dtw_matrix[i - 1, j - 1])
 
-    return np.sqrt(dtw_matrix[n, m])
+    return dtw_matrix[n, m]
 
 
 def main():
@@ -38,10 +38,11 @@ def main():
     execution_time = time.perf_counter() - start_time
     print(f"Total time: {execution_time:.2f}s")
 
-    df['dtw_distance'] = distances
-    df[['id', 'dtw_distance']].to_csv('dtw_results.csv', index=False)
-    print("Results saved to dtw_results.csv")
+    df['DTW distance'] = distances
+    df[['id', 'DTW distance']].to_csv('dtw.csv', index=False)
+    print("Results saved to dtw.csv")
 
 
 if __name__ == "__main__":
     main()
+
