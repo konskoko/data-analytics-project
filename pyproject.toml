@@ -6,11 +6,15 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "datasketch>=1.9.0",
+    "dtaidistance>=2.4.0",
+    "dtw-python>=1.7.4",
+    "fastdtw>=0.3.4",
     "matplotlib>=3.10.8",
     "nltk>=3.9.2",
     "pandas>=2.3.3",
     "scikit-learn>=1.8.0",
     "tqdm>=4.66.0",
+    "tslearn>=0.8.0",
     "wordcloud>=1.9.6",
 ]
 
