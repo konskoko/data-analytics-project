@@ -7,10 +7,10 @@ from model_utils import evaluate_pipeline
 
 
 def main():
-    X, y = get_data(preprocess=True)
+    X, y = get_data(preprocess=True, title_weight=5)
 
     svm_tfidf_pipe = make_pipeline(
-        TfidfVectorizer(max_features=200000, ngram_range=(1, 2)),
+        TfidfVectorizer(max_features=365000, ngram_range=(1, 2)),
         sklearn.svm.LinearSVC(loss='hinge', max_iter=10000, random_state=RANDOM_STATE)
     )
 
