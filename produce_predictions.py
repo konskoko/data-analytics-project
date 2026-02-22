@@ -8,19 +8,19 @@ from model_utils import output_preds
 
 def get_svm_pipeline():
     return make_pipeline(
-        TfidfVectorizer(max_features=200000, ngram_range=(1, 2)),
+        TfidfVectorizer(max_features=365_000, ngram_range=(1, 2)),
         sklearn.svm.LinearSVC(loss='hinge', max_iter=10000, random_state=RANDOM_STATE)
     )
 
 def main():
     print("Loading training data...")
     t0 = perf_counter()
-    X_train, y_train = get_data(sample=False, preprocess=True)
+    X_train, y_train = get_data(sample=False, preprocess=True, title_weight=5)
     t1 = perf_counter()
     print(f"Training data loaded in {t1 - t0:.2f} seconds")
 
     print("Loading test data...")
-    test_df, X_test = get_test_data()
+    test_df, X_test = get_test_data(preprocess=True, title_weight=5)
 
     print("Training SVM model...")
     t0 = perf_counter()
